@@ -1,6 +1,3 @@
-// Source for a bunch of RSS feeds in every country
-// https://github.com/yavuz/news-feed-list-of-countries
-
 export interface NewsConfig {
   url: string;
   parser: (xml: string) => News[];
@@ -16,13 +13,8 @@ export interface News {
 
 // Helper function to convert a date string to a relative time string.
 function getRelativeTime(dateStr: string): string {
-  // Parse the input date string (it includes timezone offset)
   const date = new Date(dateStr);
-
-  // Get the current date in UTC
   const now = new Date();
-
-  // Convert both dates to UTC and calculate the difference in milliseconds
   const diffMs = now.getTime() - date.getTime();
   const diffMinutes = Math.floor(diffMs / 60000);
 
@@ -34,11 +26,62 @@ function getRelativeTime(dateStr: string): string {
   }
 }
 
+// Function to transform image URLs based on the source domain
+function transformImageUrl(
+  url: string | undefined,
+): string | undefined {
+  if (!url) return undefined;
+
+  try {
+    // BBC-specific transformations
+    if (url.includes("bbci.co.uk")) {
+      // For Mexico's BBC feed
+      if (url.includes("topics/crr7mlg0vr2t")) {
+        return url.replace("ace/standard/240", "news/640") + ".webp";
+      }
+      // For UK's BBC feed
+      return url.replace("ace/standard/240", "news/1536");
+    }
+
+    return url;
+  } catch (e) {
+    return url;
+  }
+}
+
+// Function to extract image URL from various possible sources
+function extractImageUrl(item: Element): string | undefined {
+  const imageSources = [
+    () => item.getElementsByTagName("enclosure")[0]?.getAttribute("url"),
+    () => item.getElementsByTagName("media:content")[0]?.getAttribute("url"),
+    () => item.getElementsByTagName("media:thumbnail")[0]?.getAttribute("url"),
+    () =>
+      item.getElementsByTagName("image")[0]?.getElementsByTagName("url")[0]
+        ?.textContent,
+    () => {
+      const description =
+        item.getElementsByTagName("description")[0]?.textContent || "";
+      const imgRegex = /<img[^>]+src=['"]([^'"]+)['"]/i;
+      const match = description.match(imgRegex);
+      return match?.[1];
+    },
+  ];
+
+  for (const sourceFunc of imageSources) {
+    const imageUrl = sourceFunc();
+    if (imageUrl) {
+      return transformImageUrl(imageUrl);
+    }
+  }
+
+  return undefined;
+}
+
 function parseNewsItems(
   xml: string,
+  feedUrl: string,
   options: {
     titleTransform?: (title: string) => string;
-    imageSelector?: (item: Element) => string | undefined;
   } = {}
 ): News[] {
   const parser = new DOMParser();
@@ -50,22 +93,22 @@ function parseNewsItems(
     if (options.titleTransform) {
       title = options.titleTransform(title);
     }
-    let description = item.getElementsByTagName("description")[0]?.textContent || "";
-    // Remove HTML tags from the description string.
-    description = description.replace(/<[^>]*>/g, '').trim();
-    // Truncate the description at the last word boundary if it gets too long.
+
+    const rawDescription =
+      item.getElementsByTagName("description")[0]?.textContent || "";
+    let description = rawDescription.replace(/<[^>]*>/g, "").trim();
+
     const maxDescriptionLength = 200;
     if (description.length > maxDescriptionLength) {
-      let truncIndex = description.lastIndexOf(' ', maxDescriptionLength);
+      let truncIndex = description.lastIndexOf(" ", maxDescriptionLength);
       if (truncIndex === -1) {
         truncIndex = maxDescriptionLength;
       }
-      description = description.substring(0, truncIndex) + '...';
+      description = description.substring(0, truncIndex) + "...";
     }
+
     const url = item.getElementsByTagName("link")[0]?.textContent || "";
-    const image = options.imageSelector
-      ? options.imageSelector(item)
-      : undefined;
+    const image = extractImageUrl(item);
     const pubDate = item.getElementsByTagName("pubDate")[0]?.textContent;
     const age = pubDate ? getRelativeTime(pubDate) : undefined;
     const timestamp = pubDate ? new Date(pubDate).getTime() : 0;
@@ -93,64 +136,53 @@ function parseNewsItems(
 
 export const COUNTRY_NEWS_CONFIGS: Record<string, NewsConfig> = {
   "South Africa": {
-    url: "https://feeds.capi24.com/v1/Search/articles/news24/TopStories/rss",
-    parser: (xml: string) =>
-      parseNewsItems(xml, {
+    url: "https://feeds.24.com/articles/news24/southafrica/rss",
+    parser: function (xml: string) {
+      return parseNewsItems(xml, this.url, {
         titleTransform: (title) => title.replace("News24 | ", ""),
-        imageSelector: (item) =>
-          item.getElementsByTagName("enclosure")[0]?.getAttribute("url") ||
-          undefined,
-      }),
+      });
+    },
   },
   UK: {
     url: "https://feeds.bbci.co.uk/news/uk/rss.xml",
-    parser: (xml: string) =>
-      parseNewsItems(xml, {
-        imageSelector: (item) =>
-          item
-            .getElementsByTagName("media:thumbnail")[0]
-            ?.getAttribute("url")
-            ?.replace("ace/standard/240", "news/1536") || undefined,
-      }),
+    parser: function (xml: string) {
+      return parseNewsItems(xml, this.url);
+    },
   },
   Australia: {
     url: "https://www.brisbanetimes.com.au/rss/feed.xml",
-    parser: (xml: string) =>
-      parseNewsItems(xml, {
-        imageSelector: (item) =>
-          item.getElementsByTagName("enclosure")[0]?.getAttribute("url") ||
-          undefined,
-      }),
+    parser: function (xml: string) {
+      return parseNewsItems(xml, this.url);
+    },
   },
   USA: {
     url: "https://moxie.foxnews.com/google-publisher/us.xml",
-    parser: (xml: string) =>
-      parseNewsItems(xml, {
-        imageSelector: (item) =>
-          item.getElementsByTagName("media:content")[0]?.getAttribute("url") ||
-          undefined,
-      }),
+    parser: function (xml: string) {
+      return parseNewsItems(xml, this.url);
+    },
   },
   Mexico: {
     url: "https://feeds.bbci.co.uk/news/topics/crr7mlg0vr2t/rss.xml",
-    parser: (xml: string) =>
-      parseNewsItems(xml, {
-        imageSelector: (item) =>
-          (
-            item
-              .getElementsByTagName("media:thumbnail")[0]
-              ?.getAttribute("url") + ".webp"
-          ).replace("ace/standard/240", "news/640") || undefined,
-      }),
+    parser: function (xml: string) {
+      return parseNewsItems(xml, this.url);
+    },
   },
-    // I couldn't find a working RSS feed for Brazil in English
   Brazil: {
     url: "https://g1.globo.com/rss/g1/",
-    parser: (xml: string) =>
-      parseNewsItems(xml, {
-        imageSelector: (item) =>
-          item.getElementsByTagName("media:content")[0]?.getAttribute("url") ||
-          undefined,
-      }),
+    parser: function (xml: string) {
+      return parseNewsItems(xml, this.url);
+    },
+  },
+  Argentina: {
+    url: "https://www.batimes.com.ar/feed",
+    parser: function (xml: string) {
+      return parseNewsItems(xml, this.url);
+    },
+  },
+  Canada: {
+    url: "https://www.cbc.ca/webfeed/rss/rss-canada",
+    parser: function (xml: string) {
+      return parseNewsItems(xml, this.url);
+    },
   },
 };
