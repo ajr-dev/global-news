@@ -33,4 +33,3 @@ export default function NewsPopup({ country, news, isLoading, error, onClose }: 
     </div>
   )
 }
-
