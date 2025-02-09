@@ -13,17 +13,32 @@ export interface News {
 
 // Helper function to convert a date string to a relative time string.
 function getRelativeTime(dateStr: string): string {
-  const date = new Date(dateStr);
-  const now = new Date();
-  const diffMs = now.getTime() - date.getTime();
-  const diffMinutes = Math.floor(diffMs / 60000);
+    const date = new Date(dateStr);
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffMinutes = Math.floor(diffMs / 60000);
 
-  if (diffMinutes < 60) {
-    return diffMinutes + " minutes ago";
-  } else {
+    if (diffMinutes < 60) {
+        return `${diffMinutes} minute${diffMinutes !== 1 ? 's' : ''} ago`;
+    }
+
     const diffHours = Math.floor(diffMinutes / 60);
-    return diffHours + (diffHours === 1 ? " hour ago" : " hours ago");
-  }
+    if (diffHours < 24) {
+        return `${diffHours} hour${diffHours !== 1 ? 's' : ''} ago`;
+    }
+
+    const diffDays = Math.floor(diffHours / 24);
+    if (diffDays < 7) {
+        return `${diffDays} day${diffDays !== 1 ? 's' : ''} ago`;
+    }
+
+    const diffWeeks = Math.floor(diffDays / 7);
+    if (diffWeeks < 4) {
+        return `${diffWeeks} week${diffWeeks !== 1 ? 's' : ''} ago`;
+    }
+
+    const diffMonths = Math.floor(diffDays / 30);
+    return `${diffMonths} month${diffMonths !== 1 ? 's' : ''} ago`;
 }
 
 // Function to transform image URLs based on the source domain
@@ -179,6 +194,7 @@ export const COUNTRY_NEWS_CONFIGS: Record<string, NewsConfig> = {
       return parseNewsItems(xml, this.url);
     },
   },
+    // FOR PERSONAL USE ONLY
   Canada: {
     url: "https://www.cbc.ca/webfeed/rss/rss-canada",
     parser: function (xml: string) {
