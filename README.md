@@ -19,13 +19,13 @@
 </a>
 </p>
 
-A modern web application for viewing global news with an interactive globe visualization. **_Please note the project is not completed, and in fact, is not usable._**
+A modern web application for viewing global news with an interactive globe visualization.
 
 ## 🚀 Features
 
 - Interactive 3D globe visualization
-- Real-time news updates (not yet implemented)
-- Responsive design (I guess)
+- Latest trending news
+- Responsive design
 
 ## Getting Started
 

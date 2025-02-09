@@ -21,11 +21,48 @@ body {
 }
 
 @font-face {
-  font-family: 'RecoletaAlt-Bold';
-  src: url('/assets/RecoletaAlt-Bold.woff') format('woff');
+  font-family: 'AveriaSerifLibre-Bold';
+  src: url('/assets/AveriaSerifLibre-Bold.ttf') format('ttf');
 }
 
-.hovered-text {
-  font-family: 'RecoletaAlt-Bold', sans-serif;
+.headline {
+  font-family: 'AveriaSerifLibre-Bold', sans-serif;
+}
+
+.news-panel {
+  position: absolute;
+  top: 10%;
+  right: 10%;
+  width: 300px;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  overflow-y: auto;
+  max-height: 80%;
+}
+
+.news-item {
+  margin-bottom: 10px;
+}
+
+.news-item h3 {
+  margin: 0;
+  font-size: 1.2em;
+}
+
+.news-item p {
+  margin: 5px 0;
+}
+
+.news-item img {
+  max-width: 100%;
+  height: auto;
+  margin: 5px 0;
+}
+
+.news-item a {
+  color: #1e90ff;
+  text-decoration: none;
 }
 

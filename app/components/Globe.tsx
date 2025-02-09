@@ -9,6 +9,8 @@ import { useSpring, animated } from '@react-spring/three'
 
 import useNews from "../hooks/useNews"
 
+const AnimatedText = animated(Text)
+
 interface GlobeProps {
   onSelectCountry: (country: string | null) => void
   isCountrySelected: boolean
@@ -153,50 +155,49 @@ export default function Globe({ onSelectCountry, isCountrySelected, resetGlobePo
   }, [earthTexture, bumpTexture])
 
   const buttons = [
-    { id: "button1", lat: 35.6895, lon: 139.6917, text: "Japan" },
-    { id: "button2", lat: 48.8566, lon: 2.3522, text: "France" },
-    { id: "button3", lat: 52.3676, lon: 4.9041, text: "Netherlands" },
-    { id: "button5", lat: 55.7558, lon: 37.6173, text: "Russia" },
-    { id: "button6", lat: -33.8688, lon: 151.2093, text: "Australia" },
-    { id: "button7", lat: 51.5074, lon: -0.1278, text: "UK" },
-    { id: "button8", lat: 39.9042, lon: 116.4074, text: "China" },
-    { id: "button9", lat: 28.6139, lon: 77.209, text: "India" },
-    { id: "button10", lat: -23.5505, lon: -46.6333, text: "Brazil" },
-    { id: "button11", lat: -34.6037, lon: -58.3816, text: "Argentina" },
-    { id: "button12", lat: 19.4326, lon: -99.1332, text: "Mexico" },
-    { id: "button14", lat: 34.0522, lon: -118.2437, text: "USA" },
-    { id: "button15", lat: 41.9028, lon: 12.4964, text: "Italy" },
-    { id: "button16", lat: 40.4168, lon: -3.7038, text: "Spain" },
-    { id: "button17", lat: 50.8503, lon: 4.3517, text: "Belgium" },
-    { id: "button18", lat: 60.1695, lon: 24.9354, text: "Finland" },
-    { id: "button19", lat: 59.3293, lon: 18.0686, text: "Sweden" },
-    { id: "button20", lat: 59.9139, lon: 10.7522, text: "Norway" },
-    { id: "button21", lat: 55.6761, lon: 12.5683, text: "Denmark" },
-    { id: "button22", lat: 46.2044, lon: 6.1432, text: "Switzerland" },
-    { id: "button23", lat: 38.7223, lon: -9.1393, text: "Portugal" },
-    { id: "button24", lat: 52.52, lon: 13.405, text: "Germany" },
-    { id: "button25", lat: 48.2082, lon: 16.3738, text: "Austria" },
-    { id: "button26", lat: 47.4979, lon: 19.0402, text: "Hungary" },
-    { id: "button27", lat: 50.0755, lon: 14.4378, text: "Czech Republic" },
-    { id: "button28", lat: 45.815, lon: 15.9819, text: "Croatia" },
-    { id: "button29", lat: 42.6977, lon: 23.3219, text: "Bulgaria" },
-    { id: "button30", lat: 37.9838, lon: 23.7275, text: "Greece" },
-    { id: "button31", lat: 41.3275, lon: 19.8187, text: "Albania" },
-    { id: "button33", lat: 45.4215, lon: -75.6972, text: "Canada" },
-    { id: "button35", lat: 35.6762, lon: 139.6503, text: "Japan" },
+    { id: "button1", lat: 36.2048, lon: 138.2529, text: "Japan" },
+    { id: "button2", lat: 46.2276, lon: 2.2137, text: "France" },
+    { id: "button3", lat: 52.1326, lon: 5.2913, text: "Netherlands" },
+    { id: "button5", lat: 61.5240, lon: 105.3188, text: "Russia" },
+    { id: "button6", lat: -25.2744, lon: 133.7751, text: "Australia" },
+    { id: "button7", lat: 55.3781, lon: -3.4360, text: "UK" },
+    { id: "button8", lat: 35.8617, lon: 104.1954, text: "China" },
+    { id: "button9", lat: 20.5937, lon: 78.9629, text: "India" },
+    { id: "button10", lat: -14.2350, lon: -51.9253, text: "Brazil" },
+    { id: "button11", lat: -38.4161, lon: -63.6167, text: "Argentina" },
+    { id: "button12", lat: 23.6345, lon: -102.5528, text: "Mexico" },
+    { id: "button14", lat: 37.0902, lon: -95.7129, text: "USA" },
+    { id: "button15", lat: 41.8719, lon: 12.5674, text: "Italy" },
+    { id: "button16", lat: 40.4637, lon: -3.7492, text: "Spain" },
+    { id: "button17", lat: 50.5039, lon: 4.4699, text: "Belgium" },
+    { id: "button18", lat: 61.9241, lon: 25.7482, text: "Finland" },
+    { id: "button19", lat: 60.1282, lon: 18.6435, text: "Sweden" },
+    { id: "button20", lat: 60.4720, lon: 8.4689, text: "Norway" },
+    { id: "button21", lat: 56.2639, lon: 9.5018, text: "Denmark" },
+    { id: "button22", lat: 46.8182, lon: 8.2275, text: "Switzerland" },
+    { id: "button23", lat: 39.3999, lon: -8.2245, text: "Portugal" },
+    { id: "button24", lat: 51.1657, lon: 10.4515, text: "Germany" },
+    { id: "button25", lat: 47.5162, lon: 14.5501, text: "Austria" },
+    { id: "button26", lat: 47.1625, lon: 19.5033, text: "Hungary" },
+    { id: "button27", lat: 49.8175, lon: 15.4730, text: "Czech Republic" },
+    { id: "button28", lat: 45.1000, lon: 15.2000, text: "Croatia" },
+    { id: "button29", lat: 42.7339, lon: 25.4858, text: "Bulgaria" },
+    { id: "button30", lat: 39.0742, lon: 21.8243, text: "Greece" },
+    { id: "button31", lat: 41.1533, lon: 20.1683, text: "Albania" },
+    { id: "button33", lat: 56.1304, lon: -106.3468, text: "Canada" },
     { id: "button36", lat: 1.3521, lon: 103.8198, text: "Singapore" },
-    { id: "button37", lat: 13.7563, lon: 100.5018, text: "Thailand" },
-    { id: "button38", lat: -6.2088, lon: 106.8456, text: "Indonesia" },
-    { id: "button39", lat: 3.139, lon: 101.6869, text: "Malaysia" },
-    { id: "button40", lat: 14.5995, lon: 120.9842, text: "Philippines" },
-    { id: "button41", lat: -33.9249, lon: 18.4241, text: "South Africa" },
-    { id: "button43", lat: -1.2921, lon: 36.8219, text: "Kenya" },
-    { id: "button44", lat: 6.5244, lon: 3.3792, text: "Nigeria" },
-    { id: "button45", lat: 30.0444, lon: 31.2357, text: "Egypt" },
-    { id: "button47", lat: 24.8607, lon: 67.0011, text: "Pakistan" },
-    { id: "button48", lat: 23.8103, lon: 90.4125, text: "Bangladesh" },
-    { id: "button49", lat: 27.7172, lon: 85.324, text: "Nepal" },
-    { id: "button50", lat: 39.9334, lon: 32.8597, text: "Turkey" },
+    { id: "button37", lat: 15.8700, lon: 100.9925, text: "Thailand" },
+    { id: "button38", lat: -0.7893, lon: 113.9213, text: "Indonesia" },
+    { id: "button39", lat: 4.2105, lon: 101.9758, text: "Malaysia" },
+    { id: "button40", lat: 12.8797, lon: 121.7740, text: "Philippines" },
+    { id: "button41", lat: -30.5595, lon: 22.9375, text: "South Africa" },
+    { id: "button43", lat: -0.0236, lon: 37.9062, text: "Kenya" },
+    { id: "button44", lat: 9.0820, lon: 8.6753, text: "Nigeria" },
+    { id: "button45", lat: 26.8206, lon: 30.8025, text: "Egypt" },
+    { id: "button47", lat: 30.3753, lon: 69.3451, text: "Pakistan" },
+    { id: "button48", lat: 23.6850, lon: 90.3563, text: "Bangladesh" },
+    { id: "button49", lat: 28.3949, lon: 84.1240, text: "Nepal" },
+    { id: "button50", lat: 38.9637, lon: 35.2433, text: "Turkey" },
   ]
 
   const toCartesian = (lat: number, lon: number, radius: number) => {
@@ -237,6 +238,12 @@ export default function Globe({ onSelectCountry, isCountrySelected, resetGlobePo
 
   const { position: cloudsPosition } = useSpring({
     position: isCountrySelected ? [-0.85, 0, 0] : [0, 0, 0],
+    config: { mass: 1, tension: 170, friction: 26 },
+  })
+
+  const { textPosition, fontSize } = useSpring({
+    textPosition: isCountrySelected ? [-0.5, 0, 2] : [0, 0, 2],
+    fontSize: isCountrySelected ? 0.45 : 0.55,
     config: { mass: 1, tension: 170, friction: 26 },
   })
 
@@ -307,10 +314,18 @@ export default function Globe({ onSelectCountry, isCountrySelected, resetGlobePo
       )}
 
       {/* Hover text */}
-      {hoveredButton  && !isCountrySelected && (
-        <Text position={[0, 0, 2]} fontSize={0.55} color="white" anchorX="center" anchorY="middle">
-          {buttons.find((b) => b.id === hoveredButton)?.text.toUpperCase() || ""}
-        </Text>
+      {hoveredButton && (
+        <animated.group position={textPosition.to((x, y, z) => [x, y, z])}>
+          <AnimatedText
+            fontSize={fontSize}
+            font="/assets/AveriaSerifLibre-Bold.ttf"
+            color="white"
+            anchorX="center"
+            anchorY="middle"
+          >
+            {buttons.find((b) => b.id === hoveredButton)?.text.toUpperCase() || ""}
+          </AnimatedText>
+        </animated.group>
       )}
     </>
   )
