@@ -1,86 +1,111 @@
-import type React from "react";
-import type { News } from "../hooks/useNews";
+import type React from "react"
+import { motion, AnimatePresence } from "framer-motion"
+import { X, Clock, ExternalLink } from "lucide-react"
+import type { News } from "../hooks/useNews"
 
 interface NewsPanelProps {
-  country: string;
-  news: News[];
-  isLoading: boolean;
-  error: string | null;
-  onClose: () => void;
+  country: string
+  news: News[]
+  isLoading: boolean
+  error: string | null
+  onClose: () => void
 }
 
-const NewsPanel: React.FC<NewsPanelProps> = ({
-  country,
-  news,
-  isLoading,
-  error,
-  onClose,
-}) => {
+const NewsPanel: React.FC<NewsPanelProps> = ({ country, news, isLoading, error, onClose }) => {
   return (
-    <div className="fixed top-1/2 right-4 transform -translate-y-1/2 rounded-xl left-4 sm:left-auto w-auto sm:w-[440px] max-h-[80vh] bg-white text-black overflow-y-auto transition-transform duration-300 ease-in-out z-10">
-      <div className="p-6">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold">News from {country}</h2>
-          <button
-            onClick={onClose}
-            className="text-gray-500 hover:text-gray-700 absolute top-4 right-4"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
+    <AnimatePresence>
+      <motion.div
+        initial={{ x: "100%" }}
+        animate={{ x: 0 }}
+        exit={{ x: "100%" }}
+        transition={{ type: "spring", stiffness: 300, damping: 30 }}
+        className="fixed top-[5%] right-0 m-4 sm:left-auto h-[calc(100%-6rem)] w-[calc(100%-2rem)] sm:w-[440px] bg-white text-black overflow-y-auto shadow-2xl z-10 rounded-2xl"
+      >
+        <div className="p-6 rounded-2xl">
+          <div className="flex justify-between items-center mb-6">
+            <motion.h2
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="text-2xl font-bold"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
-          </button>
-        </div>
-        {isLoading && (
-          <div className="space-y-4">
-            {[...Array(17)].map((_, index) => (
-              <div key={index} className="animate-pulse">
-                <div className="h-4 bg-gray-300 rounded w-3/4 mb-2"></div>
-                <div className="h-4 bg-gray-300 rounded w-1/2"></div>
-              </div>
-            ))}
+              News from {country}
+            </motion.h2>
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              onClick={onClose}
+              className="text-gray-500 hover:text-gray-700"
+            >
+              <X size={24} />
+            </motion.button>
           </div>
-        )}
-        {error && <p className="text-red-500">{error}</p>}
-        {!isLoading && news.length > 0 && (
-          <ul className="space-y-4">
-            {news.map((item, index) => (
-              <li key={index} className="border-b pb-4">
-                <a
-                  href={item.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block hover:bg-gray-100 transition duration-150 ease-in-out"
+          {isLoading && (
+            <div className="space-y-4">
+              {[...Array(5)].map((_, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                  className="animate-pulse"
                 >
-                  {item.image && (
-                    <img
-                      src={item.image}
-                      alt={item.title}
-                      className="w-full h-48 object-cover mb-2 rounded"
-                    />
-                  )}
-                  <h3 className="text-lg font-semibold mb-2">{item.title}</h3>
-                  <p className="text-gray-600 mb-2">{item.description}</p>
-                  <p className="text-sm text-gray-400 mb-2">{item.age}</p>
-                  <p className="text-blue-500">Click to read more...</p>
-                </a>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
-    </div>
-  );
-};
+                  <div className="h-48 bg-gray-300 rounded-lg mb-2"></div>
+                  <div className="h-4 bg-gray-300 rounded w-3/4 mb-2"></div>
+                  <div className="h-4 bg-gray-300 rounded w-1/2"></div>
+                </motion.div>
+              ))}
+            </div>
+          )}
+          {error && (
+            <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-red-500">
+              {error}
+            </motion.p>
+          )}
+          {!isLoading && news.length > 0 && (
+            <motion.ul className="space-y-6">
+              {news.map((item, index) => (
+                <motion.li
+                  key={index}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                  className="border-b border-gray-200 pb-6"
+                >
+                  <a
+                    href={item.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block hover:bg-gray-50 transition duration-150 ease-in-out rounded-lg p-4"
+                  >
+                    {item.image && (
+                      <img
+                        src={item.image || "/placeholder.svg"}
+                        alt={item.title}
+                        className="w-full h-48 object-cover mb-4 rounded-lg shadow-md"
+                      />
+                    )}
+                    <h3 className="text-xl font-semibold mb-2 text-gray-800">{item.title}</h3>
+                    <p className="text-gray-600 mb-2 line-clamp-3">{item.description}</p>
+                    <div className="flex items-center justify-between text-sm text-gray-500">
+                      <span className="flex items-center">
+                        <Clock size={16} className="mr-1" />
+                        {item.age}
+                      </span>
+                      <span className="flex items-center text-blue-500 hover:text-blue-600">
+                        Read more
+                        <ExternalLink size={16} className="ml-1" />
+                      </span>
+                    </div>
+                  </a>
+                </motion.li>
+              ))}
+            </motion.ul>
+          )}
+        </div>
+      </motion.div>
+    </AnimatePresence>
+  )
+}
 
-export default NewsPanel;
+export default NewsPanel

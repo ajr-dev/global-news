@@ -185,4 +185,10 @@ export const COUNTRY_NEWS_CONFIGS: Record<string, NewsConfig> = {
       return parseNewsItems(xml, this.url);
     },
   },
+  Netherlands: {
+    url: "https://www.omroepbrabant.nl/rss",
+    parser: function (xml: string) {
+      return parseNewsItems(xml, this.url);
+    },
+  },
 };
