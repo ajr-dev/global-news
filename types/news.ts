@@ -24,6 +24,7 @@ function getRelativeTime(dateStr: string, localTimeCorrectionMinutes: { value: n
   now.setMinutes(now.getMinutes() + timezoneOffset + localTimeCorrectionMinutes.value);
 
   let diffMs = now.getTime() - date.getTime();
+  let diffSeconds = Math.floor(diffMs / 1000);
   let diffMinutes = Math.floor(diffMs / 60000);
 
   // If diff is negative, update the global correction so that future calls use the correct time.
@@ -32,7 +33,12 @@ function getRelativeTime(dateStr: string, localTimeCorrectionMinutes: { value: n
     localTimeCorrectionMinutes.value += correctionNeeded;
     now.setMinutes(now.getMinutes() + correctionNeeded);
     diffMs = now.getTime() - date.getTime();
+    diffSeconds = Math.floor(diffMs / 1000);
     diffMinutes = Math.floor(diffMs / 60000);
+  }
+
+  if (diffMinutes === 0) {
+    return `${diffSeconds} second${diffSeconds !== 1 ? "s" : ""} ago`;
   }
 
   if (diffMinutes < 60) {
