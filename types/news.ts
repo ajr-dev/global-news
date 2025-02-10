@@ -280,7 +280,7 @@ export const COUNTRY_NEWS_CONFIGS: Record<string, NewsConfig> = {
       });
     },
   },
-  UK: {
+  "United Kingdom": {
     url: "https://feeds.bbci.co.uk/news/uk/rss.xml",
     parser: async function (xml: string) {
       return await parseNewsItems(xml, this.url);
@@ -292,7 +292,7 @@ export const COUNTRY_NEWS_CONFIGS: Record<string, NewsConfig> = {
       return await parseNewsItems(xml, this.url);
     },
   },
-  USA: {
+  "United States": {
     url: "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=15837362",
     parser: async function (xml: string) {
       return await parseNewsItems(xml, this.url);

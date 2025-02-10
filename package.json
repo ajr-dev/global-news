@@ -20,6 +20,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "1.0.4",
+    "d3-dsv": "^3.0.1",
     "date-fns": "4.1.0",
     "embla-carousel-react": "8.5.1",
     "expo": "latest",
@@ -47,7 +48,9 @@
   },
   "devDependencies": {
     "@types/axios": "^0.9.36",
+    "@types/d3-dsv": "^3.0.7",
     "@types/node": "^22",
+    "@types/papaparse": "^5.3.15",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "postcss": "^8",
