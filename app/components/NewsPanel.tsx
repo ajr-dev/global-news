@@ -1,17 +1,23 @@
-import type React from "react"
-import { motion, AnimatePresence } from "framer-motion"
-import { X, Clock, ExternalLink } from "lucide-react"
-import type { News } from "../hooks/useNews"
+import type React from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { X, Clock, ExternalLink, AlertCircle } from "lucide-react";
+import type { News } from "../hooks/useNews";
 
 interface NewsPanelProps {
-  country: string
-  news: News[]
-  isLoading: boolean
-  error: string | null
-  onClose: () => void
+  country: string;
+  news: News[];
+  isLoading: boolean;
+  error: string | null;
+  onClose: () => void;
 }
 
-const NewsPanel: React.FC<NewsPanelProps> = ({ country, news, isLoading, error, onClose }) => {
+const NewsPanel: React.FC<NewsPanelProps> = ({
+  country,
+  news,
+  isLoading,
+  error,
+  onClose,
+}) => {
   return (
     <AnimatePresence>
       <motion.div
@@ -40,6 +46,7 @@ const NewsPanel: React.FC<NewsPanelProps> = ({ country, news, isLoading, error, 
               <X size={24} />
             </motion.button>
           </div>
+
           {isLoading && (
             <div className="space-y-4">
               {[...Array(5)].map((_, index) => (
@@ -57,12 +64,20 @@ const NewsPanel: React.FC<NewsPanelProps> = ({ country, news, isLoading, error, 
               ))}
             </div>
           )}
+
           {error && (
-            <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-red-500">
-              {error}
-            </motion.p>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 1 * 0.1 }}
+              className="flex flex-col items-center justify-center text-center p-8"
+            >
+              <AlertCircle size={48} className="text-gray-400 mb-4" />
+              <p className="text-gray-600 text-lg">{error}</p>
+            </motion.div>
           )}
-          {!isLoading && news.length > 0 && (
+
+          {!isLoading && !error && news.length > 0 && (
             <motion.ul className="space-y-6">
               {news.map((item, index) => (
                 <motion.li
@@ -85,8 +100,12 @@ const NewsPanel: React.FC<NewsPanelProps> = ({ country, news, isLoading, error, 
                         className="w-full h-48 object-cover mb-4 rounded-lg shadow-md"
                       />
                     )}
-                    <h3 className="text-xl font-semibold mb-2 text-gray-800">{item.title}</h3>
-                    <p className="text-gray-600 mb-2 line-clamp-3">{item.description}</p>
+                    <h3 className="text-xl font-semibold mb-2 text-gray-800">
+                      {item.title}
+                    </h3>
+                    <p className="text-gray-600 mb-2 line-clamp-3">
+                      {item.description}
+                    </p>
                     <div className="flex items-center justify-between text-sm text-gray-500">
                       <span className="flex items-center">
                         <Clock size={16} className="mr-1" />
@@ -105,7 +124,7 @@ const NewsPanel: React.FC<NewsPanelProps> = ({ country, news, isLoading, error, 
         </div>
       </motion.div>
     </AnimatePresence>
-  )
-}
+  );
+};
 
-export default NewsPanel
+export default NewsPanel;
