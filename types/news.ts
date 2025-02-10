@@ -139,18 +139,29 @@ async function batchTranslate(
   texts: string[],
   target: string = DEFAULT_LOCALE
 ): Promise<string[]> {
-  const res = await fetch("http://localhost:5000/translate", {
-    method: "POST",
-    body: JSON.stringify({
-      q: texts,
-      source: "auto",
-      target: target,
-      alternatives: 3,
-    }),
-    headers: { "Content-Type": "application/json" },
-  });
-  const data = await res.json();
-  return data.translatedText;
+  try {
+    const res = await fetch("http://localhost:5000/translate", {
+      method: "POST",
+      body: JSON.stringify({
+        q: texts,
+        source: "auto",
+        target: target,
+        alternatives: 3,
+      }),
+      headers: { "Content-Type": "application/json" },
+    });
+
+    if (!res.ok) {
+      console.error(`Translation API failed with status: ${res.status}`);
+      return texts;
+    }
+
+    const data = await res.json();
+    return data.translatedText;
+  } catch (error) {
+    console.error('Translation failed:', error);
+    return texts;
+  }
 }
 
 async function parseNewsItems(
@@ -243,7 +254,7 @@ async function parseNewsItems(
   });
   const translatedTexts = await batchTranslate(textsToTranslate);
 
-  // Re-assign translated texts back to the news items.
+  // Re-assign translated texts back to the news items
   for (let i = 0; i < uniqueNewsItems.length; i++) {
     uniqueNewsItems[i].title = translatedTexts[2 * i];
     uniqueNewsItems[i].description = translatedTexts[2 * i + 1];
