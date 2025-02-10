@@ -44,7 +44,7 @@ cd global-news
 npm install
 ```
 
-2. Rename `.env.example` to `.env` and change the locale to any libretranslate supported. Default is `en` for English. Development is focused on only `en`.
+2. Rename `.env.example` to `.env` and change the locale to any [libretranslate supported](https://github.com/LibreTranslate/LibreTranslate/tree/main/libretranslate/locales). Default is `en` for English. Development is focused on only `en`.
 
 3. Run the project:
 ```bash
