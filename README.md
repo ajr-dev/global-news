@@ -25,6 +25,7 @@ A modern web application for viewing global news with an interactive globe visua
 
 - Interactive 3D globe visualization
 - Latest trending news
+- RSS news sources translated with [libretranslate](https://github.com/LibreTranslate/LibreTranslate)
 - Responsive design
 
 ## Getting Started
@@ -32,6 +33,7 @@ A modern web application for viewing global news with an interactive globe visua
 ### Prerequisites
 
 - Node.js 18+ and npm
+- Docker with [libretranslate](https://github.com/LibreTranslate/LibreTranslate) running
 
 ### Installation
 
@@ -42,7 +44,9 @@ cd global-news
 npm install
 ```
 
-2. Run the project:
+2. Rename `.env.example` to `.env` and change the locale to any libretranslate supported. Default is `en` for English. Development is focused on only `en`.
+
+3. Run the project:
 ```bash
 npm run dev
 ```
@@ -52,11 +56,6 @@ npm run dev
 - **Next.js**: A React framework for server-side rendering and generating static websites.
 - **Tailwind CSS**: A utility-first CSS framework for rapid UI development.
 - **Three.js**: A JavaScript library for creating 3D graphics.
-
-## 💻 Usage
-
-1. Open the Global News application in your browser.
-2. Interact with the 3D globe to view news from different regions.
 
 ## Citation
 

@@ -36,7 +36,7 @@ export default function useNews(country: string | null) {
             throw new Error(`HTTP error! status: ${response.status}`);
           }
           const xml = await response.text();
-          const parsedNews = config.parser(xml);
+          const parsedNews = await config.parser(xml);
           setNews(parsedNews);
         } else {
           await new Promise((resolve) => setTimeout(resolve, 1000));

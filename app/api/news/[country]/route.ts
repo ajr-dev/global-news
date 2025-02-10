@@ -16,9 +16,10 @@ export async function GET(
         const response = await fetch(config.url);
         const data = await response.text();
         return new NextResponse(data, {
-        headers: {
-            'Content-Type': 'application/xml'
-        }
+            headers: {
+                'Content-Type': 'application/xml',
+                'Cache-Control': 'public, max-age=60, stale-while-revalidate=60'
+            }
         });
     } catch (error) {
         return new NextResponse('Error fetching news', { status: 500 });
