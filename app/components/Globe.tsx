@@ -231,7 +231,7 @@ export default function Globe({ onSelectCountry, isCountrySelected, resetGlobePo
 
   // Get the hovered country text (or an empty string if none)
   const hoveredCountryText = buttons.find((b) => b.id === hoveredButton)?.text || "";
-  const maxLength = 11; // Maximum character count before scaling font size down
+  const maxLength = 13; // Maximum character count before scaling font size down
   const baseFontSize = isCountrySelected ? 0.45 : 0.55;
 
   // If the text length exceeds maxLength, scale the font size down
