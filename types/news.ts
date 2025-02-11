@@ -1,4 +1,5 @@
 import dotenv from "dotenv";
+import { csvParse } from "d3-dsv";
 
 export interface NewsConfig {
   url: string;
@@ -12,6 +13,69 @@ export interface News {
   image?: string;
   age?: string;
 }
+
+interface CountryData {
+  name: string;
+  rss: string;
+}
+
+let cachedConfigs: Record<string, NewsConfig> | null = null;
+
+async function loadCountryConfigs(): Promise<Record<string, NewsConfig>> {
+  if (cachedConfigs) {
+    return cachedConfigs;
+  }
+
+  try {
+    // not ideal
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+    const response = await fetch(`${baseUrl}/assets/countries.csv`);
+    if (!response.ok) {
+      throw new Error(`Failed to load CSV: ${response.status}`);
+    }
+    
+    const csvContent = await response.text();
+    
+    if (!csvContent) {
+      throw new Error('CSV file is empty');
+    }
+
+    const parsedData = csvParse(csvContent) as CountryData[];
+    
+    if (!parsedData || parsedData.length === 0) {
+      throw new Error('No data parsed from CSV');
+    }
+
+    const configs: Record<string, NewsConfig> = {};
+    
+    for (const row of parsedData) {  
+      configs[row.name] = {
+        url: row.rss,
+        parser: async function (xml: string) {
+          return await parseNewsItems(xml);
+        },
+      };
+    }
+
+    if (Object.keys(configs).length === 0) {
+      throw new Error('No valid configurations found in CSV');
+    }
+
+    cachedConfigs = configs;
+    return configs;
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    throw new Error(`Failed to load country configurations: ${errorMessage}`);
+  }
+}
+
+export const getCountryNewsConfigs = async (): Promise<Record<string, NewsConfig>> => {
+  const configs = await loadCountryConfigs();
+  if (!configs) {
+    throw new Error('Failed to load configurations');
+  }
+  return configs;
+};
 
 // Helper function to convert a date string to a relative time string.
 function getRelativeTime(dateStr: string, localTimeCorrectionMinutes: { value: number }): string {
@@ -170,10 +234,22 @@ async function batchTranslate(
   }
 }
 
+const TITLE_PREFIXES_TO_REMOVE = [
+  "News24 | ",
+  "BBC News - ",
+  "BBC - ",
+];
+
+function cleanTitle(title: string): string {
+  let cleanedTitle = title;
+  for (const prefix of TITLE_PREFIXES_TO_REMOVE) {
+    cleanedTitle = cleanedTitle.replace(prefix, "");
+  }
+  return cleanedTitle.trim();
+}
+
 async function parseNewsItems(
   xml: string,
-  feedUrl: string,
-  options: { titleTransform?: (title: string) => string } = {}
 ): Promise<News[]> {
   const localTimeCorrectionMinutes = { value: 0 };
 
@@ -208,9 +284,7 @@ async function parseNewsItems(
   const newsItems = await Promise.all(
     itemsArray.map(async (item) => {
       let title = item.getElementsByTagName("title")[0]?.textContent || "";
-      if (options.titleTransform) {
-        title = options.titleTransform(title);
-      }
+      title = cleanTitle(title);
 
       const rawDescription = item.getElementsByTagName("description")[0]?.textContent || "";
       let description = rawDescription.replace(/<[^>]*>/g, "").trim();
@@ -269,98 +343,3 @@ async function parseNewsItems(
   // Remove the temporary timestamp field.
   return uniqueNewsItems.map(({ timestamp, ...rest }) => rest);
 }
-
-// TODO: add multiple rss url support
-export const COUNTRY_NEWS_CONFIGS: Record<string, NewsConfig> = {
-  "South Africa": {
-    url: "https://rss.iol.io/iol/news/south-africa",
-    parser: async function (xml: string) {
-      return await parseNewsItems(xml, this.url, {
-        titleTransform: (title) => title.replace("News24 | ", ""),
-      });
-    },
-  },
-  "United Kingdom": {
-    url: "https://feeds.bbci.co.uk/news/uk/rss.xml",
-    parser: async function (xml: string) {
-      return await parseNewsItems(xml, this.url);
-    },
-  },
-  Australia: {
-    url: "https://www.9news.com.au/rss",
-    parser: async function (xml: string) {
-      return await parseNewsItems(xml, this.url);
-    },
-  },
-  "United States": {
-    url: "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=15837362",
-    parser: async function (xml: string) {
-      return await parseNewsItems(xml, this.url);
-    },
-  },
-  //   https://feeds.bbci.co.uk/news/topics/crr7mlg0vr2t/rss.xml
-  //   https://mexiconewsdaily.com/category/news/feed/
-  Mexico: {
-    url: "https://www.elnorte.com/rss/portada.xml",
-    parser: async function (xml: string) {
-      return await parseNewsItems(xml, this.url);
-    },
-  },
-  Brazil: {
-    url: "https://g1.globo.com/rss/g1/",
-    parser: async function (xml: string) {
-      return await parseNewsItems(xml, this.url);
-    },
-  },
-  Argentina: {
-    url: "https://www.batimes.com.ar/feed",
-    parser: async function (xml: string) {
-      return await parseNewsItems(xml, this.url);
-    },
-  },
-  // FOR PERSONAL USE ONLY
-  Canada: {
-    url: "https://www.cbc.ca/webfeed/rss/rss-canada",
-    parser: async function (xml: string) {
-      return await parseNewsItems(xml, this.url);
-    },
-  },
-  //   https://www.dutchnews.nl/?list
-  // https://www.omroepbrabant.nl/rss
-  Netherlands: {
-    url: "https://nltimes.nl/feed",
-    parser: async function (xml: string) {
-      return await parseNewsItems(xml, this.url);
-    },
-  },
-  Kenya: {
-    url: "http://nairobiwire.com/feed",
-    parser: async function (xml: string) {
-      return await parseNewsItems(xml, this.url);
-    },
-  },
-  Nigeria: {
-    url: "https://rss.punchng.com/v1/category/latest_news",
-    parser: async function (xml: string) {
-      return await parseNewsItems(xml, this.url);
-    },
-  },
-  Egypt: {
-    url: "https://www.elwatannews.com/home/rssfeeds?sectionId=+12",
-    parser: async function (xml: string) {
-      return await parseNewsItems(xml, this.url);
-    },
-  },
-  Russia: {
-    url: "https://www.infox.ru/export/rss_yandex.xml",
-    parser: async function (xml: string) {
-      return await parseNewsItems(xml, this.url);
-    },
-  },
-  Japan: {
-    url: "https://english.kyodonews.net/rss/kyodonews-fzone.xml",
-    parser: async function (xml: string) {
-      return await parseNewsItems(xml, this.url);
-    },
-  },
-};

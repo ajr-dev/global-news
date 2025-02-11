@@ -1,22 +1,37 @@
 "use client";
 import { useState, useEffect } from "react";
-import { News, COUNTRY_NEWS_CONFIGS } from "@/types/news";
+import { News, NewsConfig, getCountryNewsConfigs } from "@/types/news";
 
 export default function useNews(country: string | null) {
   const [news, setNews] = useState<News[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [configs, setConfigs] = useState<Record<string, NewsConfig> | null>(null);
 
+  // First effect to load configs once when hook is mounted
   useEffect(() => {
-    if (!country) return;
+    const loadConfigs = async () => {
+      try {
+        const loadedConfigs = await getCountryNewsConfigs();
+        setConfigs(loadedConfigs);
+      } catch (err) {
+        setError("Failed to load country configurations");
+        console.error(err);
+      }
+    };
+    loadConfigs();
+  }, []);
+
+  // Second effect to fetch news when country changes or configs are loaded
+  useEffect(() => {
+    if (!country || !configs) return;
 
     setIsLoading(true);
     setError(null);
 
     const fetchNews = async () => {
       try {
-        const config = COUNTRY_NEWS_CONFIGS[country];
-
+        const config = configs[country];
         if (!config) {
           setError(`No supported news feed available for ${country}`);
           return;
@@ -25,9 +40,11 @@ export default function useNews(country: string | null) {
         const response = await fetch(
           `/api/news/${encodeURIComponent(country)}`
         );
+        
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
+
         const xml = await response.text();
         const parsedNews = await config.parser(xml);
         setNews(parsedNews);
@@ -40,7 +57,7 @@ export default function useNews(country: string | null) {
     };
 
     fetchNews();
-  }, [country]);
+  }, [country, configs]);
 
   return { news, isLoading, error };
 }

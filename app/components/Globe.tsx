@@ -107,13 +107,16 @@ export default function Globe({ onSelectCountry, isCountrySelected, resetGlobePo
         lat: parseFloat(row.latitude),
         lon: parseFloat(row.longitude),
         name: row.name,
+        rss: row.rss,
       }));
       setCountries(parsedData);
-      const parsedButtons = parsedData.map((row) => ({
-        id: row.code,
-        lat: row.lat,
-        lon: row.lon,
-        text: row.name,
+      const parsedButtons = parsedData
+        .filter(row => row.rss)
+        .map((row) => ({
+          id: row.code,
+          lat: row.lat,
+          lon: row.lon,
+          text: row.name,
       }));
       setButtons(parsedButtons);
     }

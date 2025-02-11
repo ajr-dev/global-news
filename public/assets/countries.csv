@@ -1,4 +1,4 @@
-country,latitude,longitude,name
+country,latitude,longitude,name,rss
 AD,42.546245,1.601554,Andorra
 AE,23.424076,53.847818,"United Arab Emirates"
 AF,33.93911,67.709953,Afghanistan
@@ -9,10 +9,10 @@ AM,40.069099,45.038189,Armenia
 AN,12.226079,-69.060087,"Netherlands Antilles"
 AO,-11.202692,17.873887,Angola
 AQ,-75.250973,-0.071389,Antarctica
-AR,-38.416097,-63.616672,Argentina
+AR,-38.416097,-63.616672,Argentina,https://www.batimes.com.ar/feed
 AS,-14.270972,-170.132217,"American Samoa"
 AT,47.516231,14.550072,Austria
-AU,-25.274398,133.775136,Australia
+AU,-25.274398,133.775136,Australia,https://www.9news.com.au/rss
 AW,12.52111,-69.968338,Aruba
 AZ,40.143105,47.576927,Azerbaijan
 BA,43.915886,17.679076,"Bosnia and Herzegovina"
@@ -27,14 +27,14 @@ BJ,9.30769,2.315834,Benin
 BM,32.321384,-64.75737,Bermuda
 BN,4.535277,114.727669,Brunei
 BO,-16.290154,-63.588653,Bolivia
-BR,-14.235004,-51.92528,Brazil
+BR,-14.235004,-51.92528,Brazil,https://g1.globo.com/rss/g1/
 BS,25.03428,-77.39628,Bahamas
 BT,27.514162,90.433601,Bhutan
 BV,-54.423199,3.413194,"Bouvet Island"
 BW,-22.328474,24.684866,Botswana
 BY,53.709807,27.953389,Belarus
 BZ,17.189877,-88.49765,Belize
-CA,56.130366,-106.346771,Canada
+CA,56.130366,-106.346771,Canada,https://www.cbc.ca/webfeed/rss/rss-canada
 CC,-12.164165,96.870956,"Cocos [Keeling] Islands"
 CD,-4.038333,21.758664,"Congo [DRC]"
 CF,6.611111,20.939444,"Central African Republic"
@@ -60,7 +60,7 @@ DO,18.735693,-70.162651,"Dominican Republic"
 DZ,28.033886,1.659626,Algeria
 EC,-1.831239,-78.183406,Ecuador
 EE,58.595272,25.013607,Estonia
-EG,26.820553,30.802498,Egypt
+EG,26.820553,30.802498,Egypt,https://www.elwatannews.com/home/rssfeeds?sectionId=+12
 EH,24.215527,-12.885834,"Western Sahara"
 ER,15.179384,39.782334,Eritrea
 ES,40.463667,-3.74922,Spain
@@ -72,7 +72,7 @@ FM,7.425554,150.550812,Micronesia
 FO,61.892635,-6.911806,"Faroe Islands"
 FR,46.227638,2.213749,France
 GA,-0.803689,11.609444,Gabon
-GB,55.378051,-3.435973,"United Kingdom"
+GB,55.378051,-3.435973,"United Kingdom",https://feeds.bbci.co.uk/news/uk/rss.xml
 GD,12.262776,-61.604171,Grenada
 GE,42.315407,43.356892,Georgia
 GF,3.933889,-53.125782,"French Guiana"
@@ -110,8 +110,8 @@ IT,41.87194,12.56738,Italy
 JE,49.214439,-2.13125,Jersey
 JM,18.109581,-77.297508,Jamaica
 JO,30.585164,36.238414,Jordan
-JP,36.204824,138.252924,Japan
-KE,-0.023559,37.906193,Kenya
+JP,36.204824,138.252924,Japan,https://english.kyodonews.net/rss/kyodonews-fzone.xml
+KE,-0.023559,37.906193,Kenya,http://nairobiwire.com/feed
 KG,41.20438,74.766098,Kyrgyzstan
 KH,12.565679,104.990963,Cambodia
 KI,-3.370417,-168.734039,Kiribati
@@ -152,14 +152,14 @@ MT,35.937496,14.375416,Malta
 MU,-20.348404,57.552152,Mauritius
 MV,3.202778,73.22068,Maldives
 MW,-13.254308,34.301525,Malawi
-MX,23.634501,-102.552784,Mexico
+MX,23.634501,-102.552784,Mexico,https://www.elnorte.com/rss/portada.xml
 MY,4.210484,101.975766,Malaysia
 MZ,-18.665695,35.529562,Mozambique
 NA,-22.95764,18.49041,Namibia
 NC,-20.904305,165.618042,"New Caledonia"
 NE,17.607789,8.081666,Niger
 NF,-29.040835,167.954712,"Norfolk Island"
-NG,9.081999,8.675277,Nigeria
+NG,9.081999,8.675277,Nigeria,https://rss.punchng.com/v1/category/latest_news
 NI,12.865416,-85.207229,Nicaragua
 NL,52.132633,5.291266,Netherlands
 NO,60.472024,8.468946,Norway
@@ -186,7 +186,7 @@ QA,25.354826,51.183884,Qatar
 RE,-21.115141,55.536384,Réunion
 RO,45.943161,24.96676,Romania
 RS,44.016521,21.005859,Serbia
-RU,61.52401,105.318756,Russia
+RU,61.52401,105.318756,Russia,https://www.infox.ru/export/rss_yandex.xml
 RW,-1.940278,29.873888,Rwanda
 SA,23.885942,45.079162,"Saudi Arabia"
 SB,-9.64571,160.156194,"Solomon Islands"
@@ -226,7 +226,7 @@ TZ,-6.369028,34.888822,Tanzania
 UA,48.379433,31.16558,Ukraine
 UG,1.373333,32.290275,Uganda
 UM,,,"U.S. Minor Outlying Islands"
-US,37.09024,-95.712891,"United States"
+US,37.09024,-95.712891,"United States",https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=15837362
 UY,-32.522779,-55.765835,Uruguay
 UZ,41.377491,64.585262,Uzbekistan
 VA,41.902916,12.453389,"Vatican City"
@@ -241,6 +241,6 @@ WS,-13.759029,-172.104629,Samoa
 XK,42.602636,20.902977,Kosovo
 YE,15.552727,48.516388,Yemen
 YT,-12.8275,45.166244,Mayotte
-ZA,-30.559482,22.937506,"South Africa"
+ZA,-30.559482,22.937506,"South Africa",https://rss.iol.io/iol/news/south-africa
 ZM,-13.133897,27.849332,Zambia
 ZW,-19.015438,29.154857,Zimbabwe

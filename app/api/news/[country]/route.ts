@@ -1,31 +1,35 @@
 import { NextResponse } from 'next/server';
-import { COUNTRY_NEWS_CONFIGS } from '@/types/news';
+import { getCountryNewsConfigs } from '@/types/news';
 
 export async function GET(
     request: Request,
     { params }: { params: { country: string } }
 ) {
-    const country = params.country;
-    const config = COUNTRY_NEWS_CONFIGS[country];
-    
-    if (!config) {
-        return new NextResponse('Country not supported', { status: 404 });
-    }
-
     try {
+        const configs = await getCountryNewsConfigs();
+        const country = params.country;
+        const config = configs[country];
+       
+        if (!config) {
+            return new NextResponse(`No news feed configuration found for ${country}`, { status: 404 });
+        }
+
         const response = await fetch(config.url, {
             next: {
-                revalidate: 60 // Cache the response locally for 60 seconds
+                revalidate: 60
             },
             headers: {
-                // Prevent upstream RSS feed from sending cached content
                 'Cache-Control': 'no-cache',
                 'Pragma': 'no-cache'
             }
         });
 
+        if (!response.ok) {
+            throw new Error(`Upstream RSS feed returned status: ${response.status}`);
+        }
+
         const data = await response.text();
-        
+       
         return new NextResponse(data, {
             headers: {
                 'Content-Type': 'application/xml'
@@ -33,6 +37,7 @@ export async function GET(
         });
     } catch (error) {
         console.error('News fetch error:', error);
-        return new NextResponse('Error fetching news', { status: 500 });
+        const errorMessage = error instanceof Error ? error.message : 'Error fetching news';
+        return new NextResponse(errorMessage, { status: 500 });
     }
 }
