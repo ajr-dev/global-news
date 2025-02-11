@@ -33,7 +33,7 @@ A modern web application for viewing global news with an interactive globe visua
 ### Prerequisites
 
 - Node.js 18+ and npm
-- Docker with [libretranslate](https://github.com/LibreTranslate/LibreTranslate) running
+- [libretranslate](https://github.com/LibreTranslate/LibreTranslate) up and running
 
 ### Installation
 
