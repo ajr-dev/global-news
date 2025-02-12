@@ -27,7 +27,6 @@ async function loadCountryConfigs(): Promise<Record<string, NewsConfig>> {
   }
 
   try {
-    // not ideal
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
     const response = await fetch(`${baseUrl}/assets/countries.csv`);
     if (!response.ok) {
@@ -48,7 +47,14 @@ async function loadCountryConfigs(): Promise<Record<string, NewsConfig>> {
 
     const configs: Record<string, NewsConfig> = {};
     
-    for (const row of parsedData) {  
+    for (const row of parsedData) {
+      // Validate the URL before using it
+      try {
+        new URL(row.rss);
+      } catch {
+        continue; // Skip this entry if the URL is invalid
+      }
+
       configs[row.name] = {
         url: row.rss,
         parser: async function (xml: string) {
