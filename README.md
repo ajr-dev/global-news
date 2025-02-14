@@ -25,7 +25,7 @@ A modern web application for viewing global news with an interactive globe visua
 
 - Interactive 3D globe visualization
 - Latest trending news
-- RSS news sources translated with [libretranslate](https://github.com/LibreTranslate/LibreTranslate)
+- [RSS news sources](https://github.com/yavuz/news-feed-list-of-countries) translated with [libretranslate](https://github.com/LibreTranslate/LibreTranslate)
 - Responsive design
 
 ## Getting Started
